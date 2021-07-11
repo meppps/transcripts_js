@@ -5,14 +5,15 @@ var prevText;
 var wordsList = [];
 var massList = [];
 var masstext;
+let videoOver = false;
 
 
 // Create file button
 var createBtn = document.createElement('button');
 createBtn.id = 'create';
 createBtn.type = 'button';
-createBtn.innerHTML = '<span class="buttonText">Create File</span>';
-createBtn.classList.add('dropdownHandle')
+createBtn.innerHTML = '<span class="buttonText">Create Transcript</span>';
+createBtn.style.cssText = `color: #4a6da7;background: #f7f7f7;padding: 7px;border: 1px solid #0000001f;margin: 11px;`;
 document.querySelector('.mediaCitation').insertAdjacentElement('beforebegin',createBtn);
 
 
@@ -20,8 +21,10 @@ document.querySelector('.mediaCitation').insertAdjacentElement('beforebegin',cre
 var download = document.createElement('a');
 download.id = 'downloadlink';
 download.download = `transcript_${Date.now()}`;
-download.innerText = '  Download File';
+download.innerText = '  Download Transcript';
+download.style.cssText = `color: #4a6da7;background: #f7f7f7;padding: 7px;border: 1px solid #0000001f;margin: 11px;`;
 document.querySelector('.mediaCitation').insertAdjacentElement('beforebegin',download);
+
 
 
 // Check subtitles box
@@ -54,7 +57,18 @@ function record(){
 var intervalId = window.setInterval(function(){
     /// 
     record();
-  }, 500);
+    // Check if video over
+    videoOver = document.querySelectorAll('.vjs-current-time-display')[1].innerText == document.querySelectorAll('.vjs-duration-display')[1].innerText && document.querySelectorAll('.vjs-duration-display')[1].innerText != '0:00';
+
+    if(videoOver === true){
+      if(wordsList.length > 0){
+          massList.push(wordsList.join(' '));
+      }
+      console.log('Video Over');
+      alert('Transcript Recording Complete');
+      clearInterval(intervalId);
+    }
+  }, 300);
 
 
 
